@@ -10,11 +10,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Etapa inicial: checagens estáticas
   static_checks:
     if: ${{ !vars.DISABLE_GODOT_CI || github.run_attempt > 1 || github.event_name == 'workflow_dispatch' }}
     name: 📊 Static Checks
     uses: ./.github/workflows/static_checks.yml
 
+  # Build Android
   android-build:
     name: 🤖 Android
     needs: static_checks
