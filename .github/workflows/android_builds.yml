@@ -90,13 +90,40 @@ jobs:
           cd ../../..
           ls -l bin/
 
+      # --- Decodifica o keystore para assinatura do APK ---
+      - name: Decode keystore
+        if: matrix.target == 'editor'
+        env:
+          GOX_KEYSTORE_BASE64: ${{ secrets.GOX_KEYSTORE_BASE64 }}
+        run: |
+          echo "$GOX_KEYSTORE_BASE64" | base64 -d > platform/android/java/gox-release.jks
+
+      # --- Gerar o editor APK assinado ---
       - name: Generate Godot editor
         if: matrix.target == 'editor'
+        env:
+          GOX_KEYSTORE_PASSWORD: ${{ secrets.GOX_KEYSTORE_PASSWORD }}
+          GOX_KEY_PASSWORD: ${{ secrets.GOX_KEY_PASSWORD }}
         run: |
           cd platform/android/java
-          ./gradlew generateGodotEditor
-          ./gradlew generateGodotHorizonOSEditor
-          ./gradlew generateGodotPicoOSEditor
+          ./gradlew generateGodotEditor \
+            -PgoxStoreFile=gox-release.jks \
+            -PgoxStorePassword=$GOX_KEYSTORE_PASSWORD \
+            -PgoxKeyAlias=goxengine \
+            -PgoxKeyPassword=$GOX_KEY_PASSWORD
+
+          ./gradlew generateGodotHorizonOSEditor \
+            -PgoxStoreFile=gox-release.jks \
+            -PgoxStorePassword=$GOX_KEYSTORE_PASSWORD \
+            -PgoxKeyAlias=goxengine \
+            -PgoxKeyPassword=$GOX_KEY_PASSWORD
+
+          ./gradlew generateGodotPicoOSEditor \
+            -PgoxStoreFile=gox-release.jks \
+            -PgoxStorePassword=$GOX_KEYSTORE_PASSWORD \
+            -PgoxKeyAlias=goxengine \
+            -PgoxKeyPassword=$GOX_KEY_PASSWORD
+
           cd ../../..
           ls -l bin/android_editor_builds/
 
