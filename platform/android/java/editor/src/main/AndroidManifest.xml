@@ -16,6 +16,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <!-- Permissões -->
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -30,11 +31,12 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" /> <!-- NOVA permissão -->
 
     <application
         android:allowBackup="false"
         android:icon="@mipmap/themed_icon"
-        android:label="${editorAppName}${editorBuildSuffix}"
+        android:label="GoxEngine" <!-- Nome do APK atualizado -->
         android:requestLegacyExternalStorage="true"
         android:theme="@style/GodotEditorSplashScreenTheme"
         tools:ignore="GoogleAppIndexingWarning">
@@ -56,27 +58,23 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Intent filter used to intercept hybrid PANEL launch for the current editor project, and route it
-            properly through the editor 'run' logic (e.g: debugger setup) -->
+            <!-- Intent filters para painel e modo imersivo -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="org.godotengine.xr.hybrid.PANEL" />
             </intent-filter>
-
-            <!-- Intent filter used to intercept hybrid IMMERSIVE launch for the current editor project, and route it
-            properly through the editor 'run' logic (e.g: debugger setup) -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="org.godotengine.xr.hybrid.IMMERSIVE" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".GodotGame"
             android:configChanges="layoutDirection|locale|orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode"
@@ -93,6 +91,7 @@
                 android:defaultWidth="@dimen/editor_default_window_width"
                 android:defaultHeight="@dimen/editor_default_window_height" />
         </activity>
+
         <activity
             android:name=".embed.EmbeddedGodotGame"
             android:configChanges="layoutDirection|locale|orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode"
@@ -105,6 +104,7 @@
             android:launchMode="singleTask"
             android:process=":EmbeddedGodotGame"
             android:supportsPictureInPicture="true" />
+
         <activity
             android:name=".GodotXRGame"
             android:configChanges="layoutDirection|locale|orientation|keyboardHidden|screenSize|smallestScreenSize|density|keyboard|navigation|screenLayout|uiMode"
@@ -118,13 +118,6 @@
             android:resizeableActivity="false"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
 
-        <!--
-        We remove this meta-data originating from the vendors plugin as we only need the loader for
-        now since the project being edited provides its own version of the vendors plugin.
-
-        This needs to be removed once we start implementing the immersive version of the project
-        manager and editor windows.
-         -->
         <meta-data
             android:name="org.godotengine.plugin.v2.GodotOpenXR"
             android:value="org.godotengine.openxr.vendors.GodotOpenXR"
