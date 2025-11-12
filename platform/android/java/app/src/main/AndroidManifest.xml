@@ -16,7 +16,7 @@
         android:required="true" />
 
     <application
-        android:label="@string/godot_project_name_string"
+        android:label="Gox Engine"
         android:allowBackup="false"
         android:icon="@mipmap/icon"
         android:appCategory="game"
