@@ -24,15 +24,47 @@
 /* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
 /* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
 /* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
-/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
-/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/* OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE. */
 /**************************************************************************/
 
 package org.godotengine.editor
+
+import android.util.Log
+import org.godotengine.editor.scripting.java.JavaScriptEngine
 
 /**
  * Primary window of the Godot Editor.
  *
  * This is the implementation of the editor used when running on regular Android devices.
  */
-open class GodotEditor : BaseGodotEditor()
+open class GodotEditor : BaseGodotEditor() {
+
+    override fun onStart() {
+        super.onStart()
+
+        // Teste rápido para validar a engine Java
+        testJavaEngine()
+    }
+
+    /**
+     * Função de teste que executa código Java dinamicamente via Janino
+     */
+    private fun testJavaEngine() {
+        try {
+            // Código Java de teste
+            val javaCode = """
+                public class TestRunner {
+                    public String run(String input) {
+                        return "Executado com sucesso: " + input;
+                    }
+                }
+            """.trimIndent()
+
+            // Executa via JavaScriptEngine
+            val result = JavaScriptEngine.run(javaCode)
+            Log.i("JavaTest", result)
+        } catch (e: Exception) {
+            Log.e("JavaTest", "Erro executando Java: ${e.message}")
+        }
+    }
+}
