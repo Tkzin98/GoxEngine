@@ -1,0 +1,46 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - GoxEngine   # sua branch principal para builds
+  workflow_dispatch: # permite rodar manualmente pelo GitHub Actions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
+      ANDROID_NDK_ROOT: ${{ github.workspace }}/android-ndk
+      JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64  # ajustaremos depois se necessário
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install Android SDK & NDK
+        run: |
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          unzip cmdline-tools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;21.4.7075529"
+
+      - name: Build Gox Engine Android Template
+        run: |
+          git submodule update --init --recursive
+          scons platform=android target=template_debug android_arch=arm64 \
+            android_sdk_path=$ANDROID_SDK_ROOT android_ndk_path=$ANDROID_NDK_ROOT \
+            java_home=$JAVA_HOME -j$(nproc)
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: GoxEngine-APK
+          path: bin/android/arm64/debug/GoxEngine.apk
