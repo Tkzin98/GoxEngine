@@ -34,10 +34,11 @@
     <application
         android:allowBackup="false"
         android:icon="@mipmap/themed_icon"
-        android:label="GoxEngine" <!-- Nome do APK atualizado -->
+        android:label="GoxEngine"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/GodotEditorSplashScreenTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <profileable
             android:shell="true"
             android:enabled="true"
@@ -123,4 +124,3 @@
     </application>
 
 </manifest>
-
