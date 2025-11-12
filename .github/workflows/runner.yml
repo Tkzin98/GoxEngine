@@ -1,17 +1,21 @@
 name: 🔗 GHA
-on: [push, pull_request, merge_group, workflow_dispatch]
+on:
+  push:
+  pull_request:
+  merge_group:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}|${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
-  static-checks:
+  static_checks:
     if: ${{ !vars.DISABLE_GODOT_CI || github.run_attempt > 1 || github.event_name == 'workflow_dispatch' }}
-    name: 📊 Static checks
+    name: 📊 Static Checks
     uses: ./.github/workflows/static_checks.yml
 
   android-build:
     name: 🤖 Android
-    needs: static-checks
+    needs: static_checks
     uses: ./.github/workflows/android_builds.yml
